@@ -33,6 +33,7 @@ reddit = praw.Reddit(
 #saved_items = reddit.user.me().saved(limit=50)
 saved_items = reddit.user.me().saved(limit=int(reddit_saved_limit))
 
+version = sys.version_info[0]
 
 for item in saved_items:
     if isinstance(item, praw.models.Submission):
@@ -43,7 +44,10 @@ for item in saved_items:
             os.makedirs(subreddit_folder, exist_ok=True)
             file_name = os.path.basename(item.url)
             file_path = os.path.join(str(subreddit_folder), file_name)
-            gallery_command = f'python -m gallery_dl -D {subreddit_folder} "{item.url}" '
+            if(version == 3):
+                gallery_command = f'python3 -m gallery_dl -D {subreddit_folder} "{item.url}" '
+            else:
+                gallery_command = f'python -m gallery_dl -D {subreddit_folder} "{item.url}" '
             result = subprocess.run(gallery_command, shell=True, text=True, capture_output=True)
             print(f"Downloaded {result.stdout} ")
 
